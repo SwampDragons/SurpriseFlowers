@@ -13,6 +13,7 @@ import calendar
 import random
 import os
 import smtplib
+import json
 
 username = 'none'
 password = 'none'
@@ -35,7 +36,7 @@ def date_generator(todays_date):
     flowerday = random.choice(range(1,ndays+1))
     return flowerday
 
-def email_chris():
+def email_chris(flowermap):
     msg = """Subject: Surprise Flowers!\n\n
     Megan is great.\n
     I love Megan.\n
@@ -54,8 +55,8 @@ def email_chris():
     with open(os.path.join(PROJECT_ROOT,'temp.txt'), 'a') as f:
         f.write('\n email Chris {0}'.format(datetime.datetime.now()))
     with open(filename, 'w') as f:
-        f.write('{0}'.format(datetime.datetime.today().day))
-        f.write('\n{0}'.format(datetime.datetime.now()))
+        flowermap['last_email'] = str(datetime.datetime.now())
+        f.write(json.dumps(flowermap))
 
 def date_checker():
     # Get today's date
@@ -64,18 +65,19 @@ def date_checker():
     if todays_date.day == 1 or not os.path.isfile(filename):
         flowerday = date_generator(todays_date)
         # save this date to a text file for future access
+        flowermap = {'flowerday':flowerday, 'last_email':None}
         with open(filename, 'w') as f:
-            f.write(str(flowerday))
+            f.write(json.dumps(flowermap))
             # add todays_date to flowerdates.txt
     else:
         with open(filename, 'r') as f:
-            lines = f.readlines()
-            flowerday = int(lines[0])
-            last_email = datetime.datetime.strptime(lines[1], '%Y-%m-%d %H:%M:%S.%f')
-            print last_email
-    if flowerday <= todays_date.day and todays_date.month > last_email.month:
+            flowermap = json.loads(f.read())
+            if flowermap['last_email']:
+                flowermap['last_email'] = datetime.datetime.strptime(flowermap['last_email'], '%Y-%m-%d %H:%M:%S.%f')
+    if flowermap['flowerday'] <= todays_date.day and \
+            (not flowermap['last_email'] or todays_date.month > flowermap['last_email'].month):
         # if today's date matches this month's generated date, run emailer
-        email_chris()
+        email_chris(flowermap)
 
 if __name__ == '__main__':
     date_checker()
