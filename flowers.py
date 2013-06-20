@@ -87,7 +87,7 @@ def date_checker(todays_date):
         # if today is the first day of the month, pick a random day of the month to buy flowers for me.
         date_generator(todays_date)
     # send_email:
-    else flowermap['flowerday'] <= todays_date.day and \
+    elif flowermap['flowerday'] <= todays_date.day and \
     flowermap['current_month'] == todays_date.month and flowermap['email_sent'] == False:
         # if today's date matches this month's generated date, run emailer
         print 'emailing...'
