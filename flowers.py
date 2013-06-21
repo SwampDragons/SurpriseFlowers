@@ -68,7 +68,7 @@ def email_chris(flowermap, todays_date):
         flowermap['email_sent'] = True
         f.write(json.dumps(flowermap))
 
-def date_checker(todays_date):
+def check_file(filename):
     if not os.path.isfile(filename):
         print 'creating flowerdate.txt...'
         # create the file for the first time, since it doesn't exist!
@@ -76,11 +76,16 @@ def date_checker(todays_date):
         print flowermap
         with open(filename, 'w') as f:
             f.write(json.dumps(flowermap))
-        flowermap = date_generator(todays_date)
+    else:  
+        with open(filename, 'r') as f:
+            flowermap = json.loads(f.read())      
+    return flowermap
     
-    # open the file and read the values!
-    with open(filename, 'r') as f:
-        flowermap = json.loads(f.read())
+def date_checker(todays_date):
+    flowermap = check_file(filename)
+    
+    if flowermap['flowerday'] == None:
+        flowermap = date_generator(todays_date)
     
     if todays_date.day >= 1 and flowermap['current_month'] < todays_date.month:
         print 'today is the first of the month! (or the first time we ran the program this month)'
@@ -95,28 +100,6 @@ def date_checker(todays_date):
 
 if __name__ == '__main__':
     date_checker(datetime.date.today())
-
-# def test_date_checker():
-#     test_flowermap = {'flowerday':flowerday, "last_email": "2013-05-26 15:56:04.273416", 'last_gen_month':'5'}
-#     # test date_checker with day = first of month
-#     first_day = datetime.datetime(2013, 6, 1, 17, 13, 26, 812111)
-#     date_checker(first_day)
-#     with open(filename, 'w') as f:
-#         flowermap = json.loads(f.read())
-#     if flowermap['flowerday']:
-
-#     # test date_checker with day = random day not the same as the day in file
-#     test_day = datetime.datetime(2013, 6, 2, 17, 13, 26, 812111)
-#     # test date when today shouldbe the day!
-#     # set file so that flowerday is not rand_day
-#     format: flowermap = {"flowerday": 26, "last_email": "2013-05-26 15:56:04.273416"}
-#     with open(filename, 'w') as f:
-#         flowermap = json.loads(f.read())
-
-#     # need to set file so that flowerday is rand_day
-#     format: flowermap = {"flowerday": 2, "last_email": "2013-05-26 15:56:04.273416"}
-#     with open(filename, 'w') as f:
-#         flowermap = json.loads(f.read())
 
 
 
