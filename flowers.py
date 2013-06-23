@@ -82,21 +82,31 @@ def check_file(filename):
     return flowermap
     
 def date_checker(todays_date):
+    # if no save file existed before today, initialize the flowermap variable and save it to a file
     flowermap = check_file(filename)
-    
+    status = -1
+
+    # in no file existed before today, generate a legitimate date
     if flowermap['flowerday'] == None:
         flowermap = date_generator(todays_date)
-    
+        status = ['file was created to save flowermap']
+
+    # if today is the first day of the month
+    # or the first time we ran the program this month pick a random day of the month to buy flowers for me.
     if todays_date.day >= 1 and flowermap['current_month'] < todays_date.month:
-        print 'today is the first of the month! (or the first time we ran the program this month)'
-        # if today is the first day of the month, pick a random day of the month to buy flowers for me.
-        date_generator(todays_date)
+        status.append('date was generated')
+        flowermap = date_generator(todays_date)
     # send_email:
-    elif flowermap['flowerday'] <= todays_date.day and \
+    if flowermap['flowerday'] <= todays_date.day and \
     flowermap['current_month'] == todays_date.month and flowermap['email_sent'] == False:
         # if today's date matches this month's generated date, run emailer
-        print 'emailing...'
+        status.append('email sent')
+        # print 'emailing...'
         email_chris(flowermap, todays_date)
+    else:
+        status.append('no email sent')
+        # print 'no email sent'
+    return status
 
 if __name__ == '__main__':
     date_checker(datetime.date.today())
