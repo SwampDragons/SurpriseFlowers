@@ -30,14 +30,37 @@ class FlowerTest(unittest.TestCase):
             flowermap = json.loads(f.read())
         self.assertEquals(flowermap, expected)
 
-    def test_check_date_for_emailer(self):
-        todays_date = datetime.date(2013,6,13)
+    def test_check_emailer1(self):
+        todays_date = datetime.date(2013,6,24)
         flowermap = {"flowerday": 23, "current_month": 6, "email_sent": True}
         expected = 'email not sent'
-        self.assert_check_date(todays_date, flowermap, expected)
+        self.assert_check_emailer(todays_date, flowermap, expected)
 
-    def assert_check_date(self, todays_date, flowermap, expected):
+    def test_check_emailer2(self):
+        todays_date = datetime.date(2013,6,13)
+        flowermap = {"flowerday": 23, "current_month": 6, "email_sent": False}
+        expected = 'email not sent'
+        self.assert_check_emailer(todays_date, flowermap, expected)
+    
+    def test_check_emailer3(self):
+        todays_date = datetime.date(2013,6,13)
+        flowermap = {"flowerday": 23, "current_month": 6, "email_sent": False}
+        expected = 'email not sent'
+        self.assert_check_emailer(todays_date, flowermap, expected)
 
+    def test_check_emailer4(self):
+        todays_date = datetime.date(2013,6,23)
+        flowermap = {"flowerday": 23, "current_month": 6, "email_sent": False}
+        expected = 'email sent'
+        self.assert_check_emailer(todays_date, flowermap, expected)
+
+    def test_check_emailer4(self):
+        todays_date = datetime.date(2013,5,23)
+        flowermap = {"flowerday": 23, "current_month": 6, "email_sent": True}
+        expected = 'email not sent'
+        self.assert_check_emailer(todays_date, flowermap, expected)
+
+    def assert_check_emailer(self, todays_date, flowermap, expected):
         def test_email_chris(flowermap, todays_date):
             return flowermap, todays_date
         email_status = flowers.check_date_for_emailer(flowermap, todays_date, test_email_chris(flowermap, todays_date))
