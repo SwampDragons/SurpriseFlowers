@@ -34,9 +34,9 @@ def date_generator(todays_date):
     # generate a random integer from 1 : the number of days in the month
     _, ndays = calendar.monthrange(todays_date.year, todays_date.month)
     flowerday = random.choice(range(1,ndays+1))
-    print 'flowerday is...',flowerday
+    # print 'flowerday is...',flowerday
     recentmonth = todays_date.month
-    print 'recent month is...', recentmonth
+    # print 'recent month is...', recentmonth
     flowermap = {'flowerday':flowerday, 'current_month':recentmonth, 'email_sent':False}
     with open(filename, 'w') as f:
         f.write(json.dumps(flowermap))
