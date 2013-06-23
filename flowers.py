@@ -60,8 +60,8 @@ def email_chris(flowermap, todays_date):
     finally:
         server.quit()
 
-    with open(os.path.join(PROJECT_ROOT,'temp.txt'), 'a') as f:
-        f.write('\n email Chris {0}'.format(datetime.datetime.now()))
+    # with open(os.path.join(PROJECT_ROOT,'temp.txt'), 'a') as f:
+        # f.write('\n email Chris {0}'.format(datetime.datetime.now()))
     with open(filename, 'w') as f:
         flowermap['flowerday'] = todays_date.day
         flowermap['current_month'] = todays_date.month
@@ -69,47 +69,62 @@ def email_chris(flowermap, todays_date):
         f.write(json.dumps(flowermap))
 
 def check_file(filename):
+    # If file doesn't exist, create the file for the first time
+    file_status = '-1'
+
     if not os.path.isfile(filename):
         print 'creating flowerdate.txt...'
-        # create the file for the first time, since it doesn't exist!
         flowermap = {'flowerday':None, 'current_month':None, 'email_sent':False}
         print flowermap
         with open(filename, 'w') as f:
             f.write(json.dumps(flowermap))
+        file_status = 'created file'
+
+    # file already exists, so read it
     else:  
         with open(filename, 'r') as f:
-            flowermap = json.loads(f.read())      
-    return flowermap
-    
-def date_checker(todays_date):
-    # if no save file existed before today, initialize the flowermap variable and save it to a file
-    flowermap = check_file(filename)
-    status = -1
+            flowermap = json.loads(f.read())     
+        file_status = 'read file' 
 
-    # in no file existed before today, generate a legitimate date
-    if flowermap['flowerday'] == None:
-        flowermap = date_generator(todays_date)
-        status = ['file was created to save flowermap']
+    # return the contents of the file
+    return flowermap, file_status
+    
+def check_date_for_emailer(flowermap, todays_date, callback):
+    email_status = 'email not sent'
+
+    # if today's date matches this month's generated date, run emailer
+    if flowermap['flowerday'] <= todays_date.day and \
+    flowermap['current_month'] == todays_date.month and flowermap['email_sent'] == False:
+        email_status = 'email sent'
+        callback(flowermap, todays_date)
+
+    return email_status
+
+def check_date_for_generator(flowermap, todays_date): 
+    generator_status = 'date not generated'
 
     # if today is the first day of the month
     # or the first time we ran the program this month pick a random day of the month to buy flowers for me.
-    if todays_date.day >= 1 and flowermap['current_month'] < todays_date.month:
-        status.append('date was generated')
+    if (todays_date.day >= 1 and flowermap['current_month'] < todays_date.month) or \
+            flowermap['flowerday'] == None:
+
+        generator_status = 'date was generated'
         flowermap = date_generator(todays_date)
-    # send_email:
-    if flowermap['flowerday'] <= todays_date.day and \
-    flowermap['current_month'] == todays_date.month and flowermap['email_sent'] == False:
-        # if today's date matches this month's generated date, run emailer
-        status.append('email sent')
-        # print 'emailing...'
-        email_chris(flowermap, todays_date)
-    else:
-        status.append('no email sent')
-        # print 'no email sent'
-    return status
+
+    return flowermap, generator_status
+
+def main(todays_date, callback):
+    # if no save file existed before today, initialize the flowermap variable and save it to a file
+    flowermap, file_status = check_file(filename)
+
+    # in no file existed before today, generate a legitimate date
+    flowermap, generator_status = check_date_for_generator(flowermap, todays_date)
+
+    # check whether we should email the person
+    email_status = check_date_for_emailer(flowermap, todays_date, callback)
 
 if __name__ == '__main__':
-    date_checker(datetime.date.today())
+    main(datetime.date.today(), email_chris)
 
 
 

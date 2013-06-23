@@ -1,4 +1,5 @@
 # This is the tests for the flower program!!
+import datetime
 import json
 import os
 import unittest
@@ -28,15 +29,18 @@ class FlowerTest(unittest.TestCase):
         with open(flowers.filename, 'r') as f:
             flowermap = json.loads(f.read())
         self.assertEquals(flowermap, expected)
+        
     def test_date_checker_no_file(self):
-        if os.path.isfile(flowers.filename):
-            os.remove(flowers.filename)
+        pass
     def test_date_checker_file_from_last_month(self):
         pass
     def test_date_checker_file_from_this_month_saved_day_is_before_today(self):
         pass
     def test_date_checker_file_from_this_month_saved_day_is_today(self):
-        pass
+        def email_chris(flowermap, todays_date):
+            return flowermap, todays_date
+        
+        thing = flowers.date_checker(datetime.date.today(), email_chris)
     def test_date_checker_file_from_this_month_saved_day_is_after_today(self):
 
 if __name__ == '__main__':
