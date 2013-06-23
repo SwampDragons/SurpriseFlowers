@@ -73,9 +73,9 @@ def check_file(filename):
     file_status = '-1'
 
     if not os.path.isfile(filename):
-        print 'creating flowerdate.txt...'
+        # print 'creating flowerdate.txt...'
         flowermap = {'flowerday':None, 'current_month':None, 'email_sent':False}
-        print flowermap
+        # print flowermap
         with open(filename, 'w') as f:
             f.write(json.dumps(flowermap))
         file_status = 'created file'
