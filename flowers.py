@@ -48,6 +48,9 @@ def date_generator(todays_date):
 def email_chris(flowermap, todays_date):
     # This function creates and sends the email, using smtplib
     #email_subject = "Subject: Surprise Flowers!\n\n"
+    # msg['Subject'] = 'The contents of %s' % textfile
+    # msg['From'] = me
+    # msg['To'] = you
 
     msg = """Subject: Surprise Flowers!\n\n
     Megan is great.\n
