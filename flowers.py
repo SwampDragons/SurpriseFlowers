@@ -2,7 +2,7 @@
 # It is called by the following cron job once per day:
 # 0 0 1  * * /usr/local/bin/python /Users/mmarsh/Projects/SurpriseFlowers/flowers.py
 #
-# eventual features:
+# next steps:
 #   1. Have option to select frequency of flowers (e.g. every two weeks or bimonthly)
 #   2. Send additional reminders for birthdays, anniversaries, 
 #      and holidays where flowers are expected
@@ -31,6 +31,8 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 filename = os.path.join(PROJECT_ROOT, 'flowerdate.txt')
 
 def date_generator(todays_date):
+    # This function picks a random day of the current month and saves it to flowermap
+
     # generate a random integer from 1 : the number of days in the month
     _, ndays = calendar.monthrange(todays_date.year, todays_date.month)
     flowerday = random.choice(range(1,ndays+1))
@@ -44,6 +46,8 @@ def date_generator(todays_date):
     return flowermap
 
 def email_chris(flowermap, todays_date):
+    # This function creates and sends the email, using smtplib
+
     msg = """Subject: Surprise Flowers!\n\n
     Megan is great.\n
     I love Megan.\n
@@ -69,7 +73,9 @@ def email_chris(flowermap, todays_date):
         f.write(json.dumps(flowermap))
 
 def check_file(filename):
-    # If file doesn't exist, create the file for the first time
+    # This function reads flowermap from the save fie; 
+    # if no save file exists then this function creates the file for the first time  
+
     file_status = '-1'
 
     if not os.path.isfile(filename):
@@ -90,6 +96,8 @@ def check_file(filename):
     return flowermap, file_status
     
 def check_date_for_emailer(flowermap, todays_date, callback):
+    # This function determines based on flowermap whether it is time to send the email
+
     email_status = 'email not sent'
 
     # if today's date matches this month's generated date, run emailer
@@ -101,6 +109,8 @@ def check_date_for_emailer(flowermap, todays_date, callback):
     return email_status
 
 def check_date_for_generator(flowermap, todays_date): 
+    #This function determines whether it is time to generate a new random day of the month
+
     generator_status = 'date not generated'
 
     # if today is the first day of the month
