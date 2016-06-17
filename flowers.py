@@ -32,7 +32,7 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 filename = os.path.join(PROJECT_ROOT, 'flowerdate.txt')
 
 
-def send_email(flowermap, todays_date):
+def send_email():
     """Generate and send email."""
     # email_subject = "Subject: Surprise Flowers!\n\n"
     # msg['Subject'] = 'The contents of %s' % textfile
@@ -49,14 +49,6 @@ def send_email(flowermap, todays_date):
         print e
     finally:
         server.quit()
-
-    # with open(os.path.join(PROJECT_ROOT,'temp.txt'), 'a') as f:
-        # f.write('\n email Chris {0}'.format(datetime.datetime.now()))
-    with open(filename, 'w') as f:
-        flowermap['flowerday'] = todays_date.day
-        flowermap['current_month'] = todays_date.month
-        flowermap['email_sent'] = True
-        f.write(json.dumps(flowermap))
 
 
 def load_or_create_flowermap(filename):
@@ -80,7 +72,15 @@ def load_or_create_flowermap(filename):
     return flowermap
 
 
-def check_date_for_emailer(flowermap, todays_date, callback):
+def update_flowermap(flowermap, todays_date):
+    with open(filename, 'w') as f:
+        flowermap['flowerday'] = todays_date.day
+        flowermap['current_month'] = todays_date.month
+        flowermap['email_sent'] = True
+        f.write(json.dumps(flowermap))
+
+
+def check_date_for_emailer(flowermap, todays_date):
     """Use flowermap to figure out if today is the day to send the email."""
 
     email_status = 'email not sent'
@@ -90,7 +90,8 @@ def check_date_for_emailer(flowermap, todays_date, callback):
             flowermap['current_month'] == todays_date.month and
             flowermap['email_sent'] == False:
         email_status = 'email sent'
-        callback(flowermap, todays_date)
+        send_email()
+        update_flowermap(flowermap, todays_date)
 
     return email_status
 
@@ -118,16 +119,17 @@ def generate_date(flowermap, todays_date):
     return flowermap
 
 
-def main(todays_date, callback):
+def main(todays_date):
     flowermap = load_or_create_flowermap(filename)
 
     flowermap = generate_date(flowermap, todays_date)
 
     # check whether we should email the person
-    email_status = check_date_for_emailer(flowermap, todays_date, callback)
+    email_status = check_date_for_emailer(flowermap, todays_date)
+
 
 if __name__ == '__main__':
-    main(datetime.date.today(), send_email)
+    main(datetime.date.today())
 
 
 
