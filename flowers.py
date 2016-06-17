@@ -1,13 +1,13 @@
-# This program exists to remind Chris to buy me flowers "just because" on a monthly basis.
-# It is called by the following cron job once per day:
-# 0 0 1  * * /usr/local/bin/python /Users/mmarsh/Projects/SurpriseFlowers/flowers.py
-#
-# next steps:
-#   1. Have option to select frequency of flowers (e.g. every two weeks or bimonthly)
-#   2. Send additional reminders for birthdays, anniversaries,
-#      and holidays where flowers are expected
-#   3. post event to google calendar with reminder for flowers
-#
+"""
+Send email to a loved one to encourage them to make a small gesture of love.
+
+Run this code as a once-daily cron task.  It will randomly pick a day of the
+month to send an email to your loved one, telling them to buy you flowers.
+"""
+
+# TODO: introduce option to select frequency of flowers
+# (e.g. every two weeks or bimonthly)
+
 import datetime
 import calendar
 import random
@@ -32,15 +32,14 @@ filename = os.path.join(PROJECT_ROOT, 'flowerdate.txt')
 
 
 def generate_date(todays_date):
-    # This function picks a random day of the current month and saves it to flowermap
-
+    """Pick a random day of the current month and save it to the flowermap."""
     # generate a random integer from 1 : the number of days in the month
     _, ndays = calendar.monthrange(todays_date.year, todays_date.month)
-    flowerday = random.choice(range(1,ndays+1))
+    flowerday = random.choice(range(1, ndays + 1))
     # print 'flowerday is...',flowerday
     recentmonth = todays_date.month
     # print 'recent month is...', recentmonth
-    flowermap = {'flowerday':flowerday, 'current_month':recentmonth, 'email_sent':False}
+    flowermap = {'flowerday': flowerday, 'current_month': recentmonth, 'email_sent': False}
     with open(filename, 'w') as f:
         f.write(json.dumps(flowermap))
         # add todays_date to flowerdates.txt
@@ -48,8 +47,8 @@ def generate_date(todays_date):
 
 
 def send_email(flowermap, todays_date):
-    # This function creates and sends the email, using smtplib
-    #email_subject = "Subject: Surprise Flowers!\n\n"
+    """Generate and send email."""
+    # email_subject = "Subject: Surprise Flowers!\n\n"
     # msg['Subject'] = 'The contents of %s' % textfile
     # msg['From'] = me
     # msg['To'] = you
@@ -80,14 +79,15 @@ def send_email(flowermap, todays_date):
 
 
 def get_flowermap(filename):
-    # This function reads flowermap from the save fie;
-    # if no save file exists then this function creates the file for the first time
+    """Read flowermap file if it exists; generate flowermap if it does not."""
 
     file_status = '-1'
 
     if not os.path.isfile(filename):
         # print 'creating flowerdate.txt...'
-        flowermap = {'flowerday':None, 'current_month':None, 'email_sent':False}
+        flowermap = {'flowerday': None,
+                     'current_month': None,
+                     'email_sent': False}
         # print flowermap
         with open(filename, 'w') as f:
             f.write(json.dumps(flowermap))
@@ -104,13 +104,14 @@ def get_flowermap(filename):
 
 
 def check_date_for_emailer(flowermap, todays_date, callback):
-    # This function determines based on flowermap whether it is time to send the email
+    """Use flowermap to figure out if today is the day to send the email."""
 
     email_status = 'email not sent'
 
     # if today's date matches this month's generated date, run emailer
     if flowermap['flowerday'] <= todays_date.day and \
-    flowermap['current_month'] == todays_date.month and flowermap['email_sent'] == False:
+            flowermap['current_month'] == todays_date.month and
+            flowermap['email_sent'] == False:
         email_status = 'email sent'
         callback(flowermap, todays_date)
 
@@ -118,7 +119,7 @@ def check_date_for_emailer(flowermap, todays_date, callback):
 
 
 def check_date_for_generator(flowermap, todays_date):
-    #This function determines whether it is time to generate a new random day of the month
+    """Check whether we should generate a new date; if so, run generator."""
 
     generator_status = 'date not generated'
 
