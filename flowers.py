@@ -62,8 +62,6 @@ def send_email(flowermap, todays_date):
 def load_or_create_flowermap(filename):
     """Read flowermap file if it exists; generate flowermap if it does not."""
 
-    file_status = '-1'
-
     if not os.path.isfile(filename):
         # print 'creating flowerdate.txt...'
         flowermap = {'flowerday': None,
@@ -72,16 +70,14 @@ def load_or_create_flowermap(filename):
         # print flowermap
         with open(filename, 'w') as f:
             f.write(json.dumps(flowermap))
-        file_status = 'created file'
 
     # file already exists, so read it
     else:
         with open(filename, 'r') as f:
             flowermap = json.loads(f.read())
-        file_status = 'read file'
 
     # return the contents of the file
-    return flowermap, file_status
+    return flowermap
 
 
 def check_date_for_emailer(flowermap, todays_date, callback):
@@ -119,13 +115,13 @@ def generate_date(flowermap, todays_date):
             f.write(json.dumps(flowermap))
             # add todays_date to flowerdates.txt
 
-    return flowermap, generator_status
+    return flowermap
 
 
 def main(todays_date, callback):
-    flowermap, file_status = load_or_create_flowermap(filename)
+    flowermap = load_or_create_flowermap(filename)
 
-    flowermap, generator_status = generate_date(flowermap, todays_date)
+    flowermap = generate_date(flowermap, todays_date)
 
     # check whether we should email the person
     email_status = check_date_for_emailer(flowermap, todays_date, callback)
