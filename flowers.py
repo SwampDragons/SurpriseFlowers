@@ -10,23 +10,28 @@ import calendar
 import random
 import os
 import json
+from mailer import send_email
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 filename = os.path.join(PROJECT_ROOT, 'flowerdate.txt')
+
+
+def write_flowermap(day, month, email_sent):
+    flowermap = {'flowerday': day,
+                 'current_month': month,
+                 'email_sent': email_sent}
+
+    with open(filename, 'w') as f:
+        f.write(json.dumps(flowermap))
+
+    return flowermap
 
 
 def load_or_create_flowermap(filename):
     """Read flowermap file if it exists; generate flowermap if it does not."""
 
     if not os.path.isfile(filename):
-        flowermap = {'flowerday': None,
-                     'current_month': None,
-                     'email_sent': False}
-
-        with open(filename, 'w') as f:
-            f.write(json.dumps(flowermap))
-
-    # file already exists, so read it
+        flowermap = write_flowermap(None, None, False)
     else:
         with open(filename, 'r') as f:
             flowermap = json.loads(f.read())
@@ -34,26 +39,18 @@ def load_or_create_flowermap(filename):
     return flowermap
 
 
-def update_flowermap(flowermap, todays_date):
-    with open(filename, 'w') as f:
-        flowermap['flowerday'] = todays_date.day
-        flowermap['current_month'] = todays_date.month
-        flowermap['email_sent'] = True
-        f.write(json.dumps(flowermap))
-
-
 def check_date_for_emailer(flowermap, todays_date):
     """Use flowermap to figure out if today is the day to send the email."""
 
-    email_status = 'email not sent'
+    email_sent = False
 
     # if today's date matches this month's generated date, run emailer
     if flowermap['flowerday'] <= todays_date.day and \
             flowermap['current_month'] == todays_date.month and
             flowermap['email_sent'] == False:
-        email_status = 'email sent'
+        email_sent = True
         send_email()
-        update_flowermap(flowermap, todays_date)
+        write_flowermap(todays_date.day, todays_date.month, email_sent)
 
     return email_status
 
@@ -73,20 +70,14 @@ def generate_date(flowermap, todays_date):
         # print 'flowerday is...',flowerday
         recentmonth = todays_date.month
         # print 'recent month is...', recentmonth
-        flowermap = {'flowerday': flowerday, 'current_month': recentmonth, 'email_sent': False}
-        with open(filename, 'w') as f:
-            f.write(json.dumps(flowermap))
-            # add todays_date to flowerdates.txt
+        flowermap = write_flowermap(flowerday, recentmonth, False)
 
     return flowermap
 
 
 def main(todays_date):
     flowermap = load_or_create_flowermap(filename)
-
     flowermap = generate_date(flowermap, todays_date)
-
-    # check whether we should email the person
     email_status = check_date_for_emailer(flowermap, todays_date)
 
 
