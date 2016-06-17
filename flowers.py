@@ -9,50 +9,20 @@ import datetime
 import calendar
 import random
 import os
-import smtplib
 import json
-
-username = 'none'
-password = 'none'
-
-try:
-    import settings
-    username = settings.USERNAME
-    password = settings.PASSWORD
-    fromaddr = settings.FROMADDR
-    toaddr = settings.TOADDR
-    msg = settings.EMAIL_MESSAGE
-except ImportError:
-    pass
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 filename = os.path.join(PROJECT_ROOT, 'flowerdate.txt')
-
-
-def send_email():
-    """Generate and send email."""
-    return
-
-    try:
-        server = smtplib.SMTP('smtp.gmail.com:587')
-        server.starttls()
-        server.login(username, password)
-        server.sendmail(fromaddr, toaddr, msg)
-    except smtplib.SMTPAuthenticationError as e:
-        print e
-    finally:
-        server.quit()
 
 
 def load_or_create_flowermap(filename):
     """Read flowermap file if it exists; generate flowermap if it does not."""
 
     if not os.path.isfile(filename):
-        # print 'creating flowerdate.txt...'
         flowermap = {'flowerday': None,
                      'current_month': None,
                      'email_sent': False}
-        # print flowermap
+
         with open(filename, 'w') as f:
             f.write(json.dumps(flowermap))
 
@@ -61,7 +31,6 @@ def load_or_create_flowermap(filename):
         with open(filename, 'r') as f:
             flowermap = json.loads(f.read())
 
-    # return the contents of the file
     return flowermap
 
 
