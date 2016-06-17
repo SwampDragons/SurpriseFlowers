@@ -31,21 +31,6 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 filename = os.path.join(PROJECT_ROOT, 'flowerdate.txt')
 
 
-def generate_date(todays_date):
-    """Pick a random day of the current month and save it to the flowermap."""
-    # generate a random integer from 1 : the number of days in the month
-    _, ndays = calendar.monthrange(todays_date.year, todays_date.month)
-    flowerday = random.choice(range(1, ndays + 1))
-    # print 'flowerday is...',flowerday
-    recentmonth = todays_date.month
-    # print 'recent month is...', recentmonth
-    flowermap = {'flowerday': flowerday, 'current_month': recentmonth, 'email_sent': False}
-    with open(filename, 'w') as f:
-        f.write(json.dumps(flowermap))
-        # add todays_date to flowerdates.txt
-    return flowermap
-
-
 def send_email(flowermap, todays_date):
     """Generate and send email."""
     # email_subject = "Subject: Surprise Flowers!\n\n"
@@ -118,18 +103,25 @@ def check_date_for_emailer(flowermap, todays_date, callback):
     return email_status
 
 
-def check_date_for_generator(flowermap, todays_date):
+def generate_date(flowermap, todays_date):
     """Check whether we should generate a new date; if so, run generator."""
 
-    generator_status = 'date not generated'
+    date_generated = False
 
-    # if today is the first day of the month
-    # or the first time we ran the program this month pick a random day of the month to buy flowers for me.
     if (todays_date.day >= 1 and flowermap['current_month'] < todays_date.month) or \
             flowermap['flowerday'] == None:
 
-        generator_status = 'date was generated'
-        flowermap = generate_date(todays_date)
+        date_generated = True
+
+        _, ndays = calendar.monthrange(todays_date.year, todays_date.month)
+        flowerday = random.choice(range(1, ndays + 1))
+        # print 'flowerday is...',flowerday
+        recentmonth = todays_date.month
+        # print 'recent month is...', recentmonth
+        flowermap = {'flowerday': flowerday, 'current_month': recentmonth, 'email_sent': False}
+        with open(filename, 'w') as f:
+            f.write(json.dumps(flowermap))
+            # add todays_date to flowerdates.txt
 
     return flowermap, generator_status
 
@@ -138,8 +130,7 @@ def main(todays_date, callback):
     # if no save file existed before today, initialize the flowermap variable and save it to a file
     flowermap, file_status = get_flowermap(filename)
 
-    # in no file existed before today, generate a legitimate date
-    flowermap, generator_status = check_date_for_generator(flowermap, todays_date)
+    flowermap, generator_status = generate_date(flowermap, todays_date)
 
     # check whether we should email the person
     email_status = check_date_for_emailer(flowermap, todays_date, callback)
