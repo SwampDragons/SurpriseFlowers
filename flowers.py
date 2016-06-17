@@ -19,11 +19,12 @@ username = 'none'
 password = 'none'
 
 try:
-    import local_settings as settings
+    import settings
     username = settings.USERNAME
     password = settings.PASSWORD
     fromaddr = settings.FROMADDR
     toaddr = settings.TOADDR
+    msg = settings.EMAIL_MESSAGE
 except ImportError:
     pass
 
@@ -37,12 +38,7 @@ def send_email(flowermap, todays_date):
     # msg['Subject'] = 'The contents of %s' % textfile
     # msg['From'] = me
     # msg['To'] = you
-
-    msg = """Subject: Surprise Flowers!\n\n
-    Megan is great.\n
-    I love Megan.\n
-    You know how I can tell her she's great?  FLOWERS!\n
-    I should buy her flowers."""
+    return
 
     try:
         server = smtplib.SMTP('smtp.gmail.com:587')
@@ -63,7 +59,7 @@ def send_email(flowermap, todays_date):
         f.write(json.dumps(flowermap))
 
 
-def get_flowermap(filename):
+def load_or_create_flowermap(filename):
     """Read flowermap file if it exists; generate flowermap if it does not."""
 
     file_status = '-1'
@@ -127,8 +123,7 @@ def generate_date(flowermap, todays_date):
 
 
 def main(todays_date, callback):
-    # if no save file existed before today, initialize the flowermap variable and save it to a file
-    flowermap, file_status = get_flowermap(filename)
+    flowermap, file_status = load_or_create_flowermap(filename)
 
     flowermap, generator_status = generate_date(flowermap, todays_date)
 
