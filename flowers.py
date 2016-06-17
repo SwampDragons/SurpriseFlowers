@@ -1,10 +1,10 @@
-# This program exists to remind Chris to buy me flowers "just because" on a monthly basis.  
+# This program exists to remind Chris to buy me flowers "just because" on a monthly basis.
 # It is called by the following cron job once per day:
 # 0 0 1  * * /usr/local/bin/python /Users/mmarsh/Projects/SurpriseFlowers/flowers.py
 #
 # next steps:
 #   1. Have option to select frequency of flowers (e.g. every two weeks or bimonthly)
-#   2. Send additional reminders for birthdays, anniversaries, 
+#   2. Send additional reminders for birthdays, anniversaries,
 #      and holidays where flowers are expected
 #   3. post event to google calendar with reminder for flowers
 #
@@ -23,14 +23,15 @@ try:
     username = settings.USERNAME
     password = settings.PASSWORD
     fromaddr = settings.FROMADDR
-    toaddr = settings.TOADDR 
+    toaddr = settings.TOADDR
 except ImportError:
     pass
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 filename = os.path.join(PROJECT_ROOT, 'flowerdate.txt')
 
-def date_generator(todays_date):
+
+def generate_date(todays_date):
     # This function picks a random day of the current month and saves it to flowermap
 
     # generate a random integer from 1 : the number of days in the month
@@ -45,7 +46,8 @@ def date_generator(todays_date):
         # add todays_date to flowerdates.txt
     return flowermap
 
-def email_chris(flowermap, todays_date):
+
+def send_email(flowermap, todays_date):
     # This function creates and sends the email, using smtplib
     #email_subject = "Subject: Surprise Flowers!\n\n"
     # msg['Subject'] = 'The contents of %s' % textfile
@@ -76,9 +78,10 @@ def email_chris(flowermap, todays_date):
         flowermap['email_sent'] = True
         f.write(json.dumps(flowermap))
 
-def check_file(filename):
-    # This function reads flowermap from the save fie; 
-    # if no save file exists then this function creates the file for the first time  
+
+def get_flowermap(filename):
+    # This function reads flowermap from the save fie;
+    # if no save file exists then this function creates the file for the first time
 
     file_status = '-1'
 
@@ -91,14 +94,15 @@ def check_file(filename):
         file_status = 'created file'
 
     # file already exists, so read it
-    else:  
+    else:
         with open(filename, 'r') as f:
-            flowermap = json.loads(f.read())     
-        file_status = 'read file' 
+            flowermap = json.loads(f.read())
+        file_status = 'read file'
 
     # return the contents of the file
     return flowermap, file_status
-    
+
+
 def check_date_for_emailer(flowermap, todays_date, callback):
     # This function determines based on flowermap whether it is time to send the email
 
@@ -112,7 +116,8 @@ def check_date_for_emailer(flowermap, todays_date, callback):
 
     return email_status
 
-def check_date_for_generator(flowermap, todays_date): 
+
+def check_date_for_generator(flowermap, todays_date):
     #This function determines whether it is time to generate a new random day of the month
 
     generator_status = 'date not generated'
@@ -123,13 +128,14 @@ def check_date_for_generator(flowermap, todays_date):
             flowermap['flowerday'] == None:
 
         generator_status = 'date was generated'
-        flowermap = date_generator(todays_date)
+        flowermap = generate_date(todays_date)
 
     return flowermap, generator_status
 
+
 def main(todays_date, callback):
     # if no save file existed before today, initialize the flowermap variable and save it to a file
-    flowermap, file_status = check_file(filename)
+    flowermap, file_status = get_flowermap(filename)
 
     # in no file existed before today, generate a legitimate date
     flowermap, generator_status = check_date_for_generator(flowermap, todays_date)
@@ -138,7 +144,7 @@ def main(todays_date, callback):
     email_status = check_date_for_emailer(flowermap, todays_date, callback)
 
 if __name__ == '__main__':
-    main(datetime.date.today(), email_chris)
+    main(datetime.date.today(), send_email)
 
 
 
