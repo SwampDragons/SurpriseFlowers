@@ -5,9 +5,6 @@ Run this code as a once-daily cron task.  It will randomly pick a day of the
 month to send an email to your loved one, telling them to buy you flowers.
 """
 
-# TODO: introduce option to select frequency of flowers
-# (e.g. every two weeks or bimonthly)
-
 import datetime
 import calendar
 import random
@@ -34,10 +31,6 @@ filename = os.path.join(PROJECT_ROOT, 'flowerdate.txt')
 
 def send_email():
     """Generate and send email."""
-    # email_subject = "Subject: Surprise Flowers!\n\n"
-    # msg['Subject'] = 'The contents of %s' % textfile
-    # msg['From'] = me
-    # msg['To'] = you
     return
 
     try:
