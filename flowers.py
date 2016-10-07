@@ -77,7 +77,7 @@ def generate_date(flowermap, todays_date):
 
 def main(todays_date):
     flowermap = load_or_create_flowermap()
-    flowermap = generate_date(flowermap, todays_date)
+    flowermap = generate_date(flowermap, todays_date)[0]
     check_date_for_emailer(flowermap, todays_date)
 
 
