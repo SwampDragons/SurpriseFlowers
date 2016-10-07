@@ -14,3 +14,42 @@ use fairly frequently.  It picks a random day of the month to email your
 significant other (or, you can set it up to run for yourself!) and on that
 day will email a "buy flowers" reminder.
 
+## Dependencies
+You need to have a gmail account which you've gotten an application password
+for.  Also you need to be able to setup a crontab.  I've only tested this on my
+mac, so you need one of those or, I imagine, a linux machine.  I haven't
+tried running this on Windows.
+
+## Setup
+TODO: Create setup script that handles this for you.
+
+Get an application password from your mac.
+Clone the repo:
+```
+git clone git@github.com:SwampDragons/SurpriseFlowers.py
+cd SurpriseFlowers
+touch settings.py
+```
+
+Then open the settings file and copy this code into it:
+```python
+#!/usr/bin/env python
+# encoding: utf-8
+"""Local settings not to be shared with github."""
+USERNAME = "youremail@gmail.com"
+PASSWORD = "super-secret-password-from-google"
+FROMADDR = "youremail@gmail.com"
+TOADDR = "flower-recipient@email.com"
+EMAIL_MESSAGE = """Subject: Surprise Flowers!\n\n
+    <Flower Recipient> is great.\n
+    I love <Flower Recipient>.\n
+    You know how I can tell them they're great?  FLOWERS!\n
+    I should buy them flowers."""
+```
+Open your crontab to edit it:
+`crontab -e`
+
+Add something like this:
+```
+@hourly python /my/repo/dir/SurpriseFlowers/flowers.py
+```
