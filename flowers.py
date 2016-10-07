@@ -60,6 +60,8 @@ def check_date_for_emailer(flowermap, todays_date):
 def generate_date(flowermap, todays_date):
     """Check whether we should generate a new date; if so, run generator."""
 
+    generated_flowermap = False
+
     if not flowermap['flowerday'] or flowermap['current_month'] != todays_date.month:
 
         _, ndays = calendar.monthrange(todays_date.year, todays_date.month)
@@ -68,8 +70,9 @@ def generate_date(flowermap, todays_date):
         recentmonth = todays_date.month
         # print 'recent month is...', recentmonth
         flowermap = write_flowermap(flowerday, recentmonth, False)
+        generated_flowermap = True
 
-    return flowermap
+    return flowermap, generated_flowermap
 
 
 def main(todays_date):
