@@ -38,38 +38,32 @@ class EmailerTest(unittest.TestCase):
     def test_check_emailer1(self):
         todays_date = datetime.date(2013, 6, 24)
         flowermap = {"flowerday": 23, "current_month": 6, "email_sent": True}
-        expected = False
-        self.assert_check_emailer(todays_date, flowermap, expected)
+        self.assert_check_emailer(todays_date, flowermap, False)
 
     def test_check_emailer2(self):
         todays_date = datetime.date(2013, 6, 13)
         flowermap = {"flowerday": 23, "current_month": 6, "email_sent": False}
-        expected = False
-        self.assert_check_emailer(todays_date, flowermap, expected)
+        self.assert_check_emailer(todays_date, flowermap, False)
 
     def test_check_emailer3(self):
         todays_date = datetime.date(2013, 6, 13)
         flowermap = {"flowerday": 23, "current_month": 6, "email_sent": False}
-        expected = False
-        self.assert_check_emailer(todays_date, flowermap, expected)
+        self.assert_check_emailer(todays_date, flowermap, False)
 
     def test_check_emailer4(self):
         todays_date = datetime.date(2013, 6, 23)
         flowermap = {"flowerday": 23, "current_month": 6, "email_sent": False}
-        expected = True
-        self.assert_check_emailer(todays_date, flowermap, expected)
+        self.assert_check_emailer(todays_date, flowermap, True)
 
     def test_check_emailer5(self):
         todays_date = datetime.date(2013, 5, 23)
         flowermap = {"flowerday": 23, "current_month": 6, "email_sent": True}
-        expected = False
-        self.assert_check_emailer(todays_date, flowermap, expected)
+        self.assert_check_emailer(todays_date, flowermap, False)
 
     def test_check_emailer6(self):
         todays_date = datetime.date(2013, 5, 23)
         flowermap = {"flowerday": 23, "current_month": 6, "email_sent": False}
-        expected = False
-        self.assert_check_emailer(todays_date, flowermap, expected)
+        self.assert_check_emailer(todays_date, flowermap, False)
 
 
 class DateGeneratorTest(unittest.TestCase):
@@ -80,20 +74,17 @@ class DateGeneratorTest(unittest.TestCase):
     def test_check_generator1(self):
         todays_date = datetime.date(2013, 6, 23)
         flowermap = {"flowerday": 23, "current_month": 6, "email_sent": False}
-        expected = False
-        self.assert_date(flowermap, expected, todays_date)
+        self.assert_date(flowermap, False, todays_date)
 
     def test_check_generator2(self):
-        todays_date = datetime.date(2013,6,23)
+        todays_date = datetime.date(2013, 6, 23)
         flowermap = {"flowerday": 24, "current_month": 6, "email_sent": True}
-        expected = False
-        self.assert_date(flowermap, expected, todays_date)
+        self.assert_date(flowermap, False, todays_date)
 
     def test_check_generator3(self):
-        todays_date = datetime.date(2013,6,23)
+        todays_date = datetime.date(2013, 6, 23)
         flowermap = {"flowerday": 23, "current_month": 5, "email_sent": False}
-        expected = True
-        self.assert_date(flowermap, expected, todays_date)
+        self.assert_date(flowermap, True, todays_date)
 
 if __name__ == '__main__':
     unittest.main()
