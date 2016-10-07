@@ -1,8 +1,10 @@
+#!/usr/bin/env python
+# encoding: utf-8
 """Send email, managing all details such as authentication."""
 import smtplib
 
-username = 'none'
-password = 'none'
+username = None
+password = None
 
 try:
     import settings
@@ -11,20 +13,19 @@ try:
     fromaddr = settings.FROMADDR
     toaddr = settings.TOADDR
     msg = settings.EMAIL_MESSAGE
-except ImportError:
-    pass
+except ImportError as e:
+    raise("COULDNT IMPORT LOCAL SETTINGS: %s" % e)
 
 
 def send_email():
     """Generate and send email."""
-    return
 
     try:
-        server = smtplib.SMTP('smtp.gmail.com:587')
+        server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login(username, password)
+        server.login(fromaddr, password)
         server.sendmail(fromaddr, toaddr, msg)
-    except smtplib.SMTPAuthenticationError as e:
-        print e
+    except Exception as e:
+        raise e
     finally:
         server.quit()
