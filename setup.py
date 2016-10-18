@@ -40,13 +40,14 @@ def generate_settings_file():
     """Interactively generate email settings file."""
     # TODO extend so that person buying flowers can install it on their
     # computer without confusion.
-    username = raw_input("What is your email username?")
-    password = raw_input("What is your email password?")
-    fromaddr = raw_input("What is your email address?")
+    username = raw_input("What is your email address (sorry, must be Gmail)?")
+    password = raw_input("Create an application specific password for your "
+                         "gmail acct.  Now share it, please!")
+    fromaddr = username
     floweree_name = raw_input("What is your name?")
     flowerer_name = raw_input("What is your loved one's name?")
     toaddr = raw_input("What is your loved one's email address?")
-    gift = raw_input("What is the small token of love you want to be reminded",
+    gift = raw_input("What is the small token of love you want to remind them "
                      "to send? (default: flowers")
     email_message = """
         Subject: Surprise {0}\n\n
