@@ -21,8 +21,15 @@ mac, so you need one of those or, I imagine, a linux machine.  I haven't
 tried running this on Windows.
 
 ## Setup
-TODO: Create setup script that handles this for you.
+You can either use my seutp script or set up yourself.
+### Setup Script
+from the repo directory, run
+```
+python setup.py
+```
+and follow the instructions in the prompts.
 
+### Manual
 Get an application password from your mac.
 Clone the repo:
 ```
