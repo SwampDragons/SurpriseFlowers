@@ -1,4 +1,4 @@
-#Surprise Flowers
+# Surprise Flowers
 This little tool traces its origins to a joke-argument between my husband and
 me about four years ago, when I was first learning Python. The premise of the
 argument was that while he bought me flowers on all of the important special
