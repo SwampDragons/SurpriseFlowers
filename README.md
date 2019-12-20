@@ -1,11 +1,11 @@
 # Surprise Flowers
 This little tool traces its origins to a joke-argument between my husband and
-me about four years ago, when I was first learning Python. The premise of the
-argument was that while he bought me flowers on all of the important special
-occasions -- e.g. my birthday, our anniversary, Valentine's Day -- he never
-bought me flowers "just because." His defense was that since he loved me so
-much _all the time_ he never thought "I love her so much right now that
-I'm going to buy her flowers."
+me back in 2013, when I was a pretty green developer and first learning Python.
+The premise of the argument was that while he bought me flowers on all of the
+important special occasions -- e.g. my birthday, our anniversary, Valentine's
+Day -- he never bought me flowers "just because." His defense was that since he
+loved me so much _all the time_ he never thought "I love her so much right now
+that I'm going to buy her flowers."
 
 I said, "I think I can fix that," and Surprise Flowers was born.
 
@@ -18,10 +18,12 @@ day will email a "buy flowers" reminder.
 You need to have a gmail account which you've gotten an application password
 for.  Also you need to be able to setup a crontab.  I've only tested this on my
 mac, so you need one of those or, I imagine, a linux machine.  I haven't
-tried running this on Windows.
+tried running this on Windows -- my understanding is that cron isn't super well
+supported on WSL yet.
 
 ## Setup
 You can either use my seutp script or set up yourself.
+
 ### Setup Script
 from the repo directory, run
 ```

@@ -48,7 +48,7 @@ def check_date_for_emailer(flowermap, todays_date):
 
     # if today's date matches this month's generated date, run emailer
     if flowermap['flowerday'] <= todays_date.day and \
-            flowermap['current_month'] == todays_date.month and \
+            flowermap['current_month'] <= todays_date.month and \
             not flowermap['email_sent']:
         email_sent = True
         send_email()
